@@ -9,6 +9,7 @@
 #include <common.h>
 #include <dm.h>
 #include <video.h>
+#include <env.h>
 #include <asm/io.h>
 #include <asm/system.h>
 
@@ -99,9 +100,10 @@ static int mcde_simple_probe(struct udevice *dev)
 							     SRC_SYNCH, val);
 
 	plat->size = uc_priv->xsize * uc_priv->ysize * VNBYTES(uc_priv->bpix);
-	debug("MCDE base: 0x%lx, xsize: %d, ysize: %d, bpp: %d\n",
-	      plat->base, uc_priv->xsize, uc_priv->ysize, VNBITS(uc_priv->bpix));
-
+	char StringForFBADDR[1000];
+	char test[] = "MCDE base: 0x%lx, xsize: %d, ysize: %d, bpp: %d\n";
+	sprintf(StringForFBADDR, test, plat->base, uc_priv->xsize, uc_priv->ysize, VNBITS(uc_priv->bpix));
+	env_set("frame", &StringForFBADDR);
 	video_set_flush_dcache(dev, true);
 	return 0;
 }
